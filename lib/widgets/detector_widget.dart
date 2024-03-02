@@ -25,7 +25,6 @@ class _DetectorWidgetState extends State<DetectorWidget>
   StreamSubscription? _subscription;
   bool isZoomedIn = false;
   List<Recognition>? results;
-
   get controller => camController;
 
   @override
@@ -53,13 +52,14 @@ class _DetectorWidgetState extends State<DetectorWidget>
 
   void _initializeCamera() async {
     cameras = await availableCameras();
-    camController = CameraController(cameras[0], ResolutionPreset.medium,
-        enableAudio: false)
-      ..initialize().then((value) async {
-        await controller.startImageStream(onLatestImageAvailable);
-        setState(() {});
-        ScreenParams.previewSize = controller.value.previewSize!;
-      });
+    camController =
+        CameraController(cameras[0], ResolutionPreset.high, enableAudio: false)
+          ..initialize().then((value) async {
+            await controller.startImageStream(onLatestImageAvailable);
+            controller.setZoomLevel(1.0);
+            setState(() {});
+            ScreenParams.previewSize = controller.value.previewSize!;
+          });
   }
 
   @override
@@ -74,12 +74,11 @@ class _DetectorWidgetState extends State<DetectorWidget>
           aspectRatio: aspect,
           child: GestureDetector(
               onDoubleTap: () {
-                print("test");
-                print(isZoomedIn);
-                if(isZoomedIn) {
+                if (isZoomedIn) {
                   controller.setZoomLevel(1.0);
                   isZoomedIn = false;
                 }
+                setState(() {});
               },
               child: CameraPreview(controller)),
         ),
@@ -104,20 +103,24 @@ class _DetectorWidgetState extends State<DetectorWidget>
                   height: result.renderLocation.height,
                   child: GestureDetector(
                     onDoubleTap: () {
-                      if(isZoomedIn) {
-                        controller.setZoomLevel(1);
+                      if (isZoomedIn) {
+                        controller.setZoomLevel(1.0);
                         isZoomedIn = false;
                       } else {
-                        double w = ScreenParams.screenSize.width / result.renderLocation.width;
-                        double h = ScreenParams.screenSize.height / result.renderLocation.height;
+                        double w = ScreenParams.screenSize.width /
+                            result.renderLocation.width;
+                        double h = ScreenParams.screenSize.height /
+                            result.renderLocation.height;
                         double zoom = min(w, h);
                         controller.setZoomLevel(zoom);
                         isZoomedIn = true;
                       }
+                      setState(() {});
                     },
                     child: BoxWidget(
-                      result: result,
-                    ),
+                        result: result,
+                        randColor: Colors.primaries[
+                            Random().nextInt(Colors.primaries.length)]),
                   ),
                 ))
             .toList(),
