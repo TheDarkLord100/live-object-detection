@@ -10,7 +10,8 @@ Live Object Detection is a Flutter app designed for both Android and iOS platfor
 
 ## Screenshots
 
-_Insert screenshots of the app here_
+![Screenshot 1](https://github.com/TheDarkLord100/live-object-detection/Screenshots/screenshot1.jpeg)
+![Screenshot 2](https://github.com/TheDarkLord100/live-object-detection/Screenshots/screenshot2.jpeg)
 
 ## Installation
 
